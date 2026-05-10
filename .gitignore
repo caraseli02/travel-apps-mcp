@@ -1,0 +1,24 @@
+.env
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+.DS_Store
+.fastapicloud/
+.gstack/
+.context/
+
+*storybook.log
+storybook-static
+node_modules/
+dist/
+.mcp-use/
+
+# Development artifacts
+*.png
+*.log
+!mcp_servers/widgets/stories/**/*.png
