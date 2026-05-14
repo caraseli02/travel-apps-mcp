@@ -53,6 +53,134 @@ const mapItem = (item: any, tripId: string) => ({
   updated_at: new Date().toISOString(),
 });
 
+function FirstFiveMinutesWorkspacePreview() {
+  const [selectedNextStep, setSelectedNextStep] = React.useState<"dates" | "stay" | "transport" | null>(null);
+  const datesChosen = selectedNextStep === "dates";
+  const stayChosen = selectedNextStep === "stay";
+  const transportChosen = selectedNextStep === "transport";
+
+  return (
+    <section className="widget first-five-workspace" aria-label="First five minutes trip workspace preview">
+      <div className="workspace-brief">
+        <div>
+          <p className="workspace-kicker">Workspace created</p>
+          <h1 className="workspace-title">Venice Trip</h1>
+        </div>
+        <span className="workspace-status">3-4 days</span>
+      </div>
+
+      <div className="workspace-action-strip" aria-label="Workspace actions">
+        <button
+          className={`workspace-action ${datesChosen ? "is-selected" : ""}`}
+          type="button"
+          aria-pressed={datesChosen}
+          onClick={() => setSelectedNextStep("dates")}
+        >
+          Add travel dates
+        </button>
+        <button
+          className={`workspace-action ${stayChosen ? "is-selected" : ""}`}
+          type="button"
+          aria-pressed={stayChosen}
+          onClick={() => setSelectedNextStep("stay")}
+        >
+          Choose stay area
+        </button>
+        <button
+          className={`workspace-action ${transportChosen ? "is-selected" : ""}`}
+          type="button"
+          aria-pressed={transportChosen}
+          onClick={() => setSelectedNextStep("transport")}
+        >
+          Plan transport
+        </button>
+      </div>
+
+      <div className="readiness-ledger" aria-label="Trip readiness">
+        <div className="readiness-row">
+          <span className="readiness-state is-known">Known</span>
+          <span className="readiness-value">Destination: Venice</span>
+        </div>
+        <div className="readiness-row">
+          <span className="readiness-state is-known">Known</span>
+          <span className="readiness-value">Length: 3-4 days</span>
+        </div>
+        <div className="readiness-row">
+          <span className="readiness-state is-estimated">Estimated</span>
+          <span className="readiness-value">Pace: culture and food first</span>
+        </div>
+        <div className="readiness-row">
+          <span className={`readiness-state ${datesChosen ? "is-known" : "is-needs-check"}`}>
+            {datesChosen ? "Known" : "Needs check"}
+          </span>
+          <span className="readiness-value">
+            {datesChosen ? "Dates: early October, flexible by 2 days" : "Exact dates and transport"}
+          </span>
+        </div>
+      </div>
+
+      <div className="workspace-next-step">
+        <span className="workspace-next-label">Next</span>
+        <p>
+          {datesChosen
+            ? "Dates are staged. Next, choose where to stay."
+            : stayChosen
+              ? "Stay area is staged. Next, confirm dates before searching hotels."
+              : transportChosen
+                ? "Transport is staged. Next, confirm dates before checking routes."
+                : "Pick travel dates before hotel or flight search."}
+        </p>
+      </div>
+
+      <div className="workspace-phases" aria-label="Planning phases">
+        <section className="workspace-phase is-researching">
+          <div className="workspace-phase-header">
+            <p>Researching</p>
+            <span>3</span>
+          </div>
+          <ul className="workspace-phase-list">
+            {!datesChosen ? <li>Travel dates</li> : null}
+            {!stayChosen ? <li>Stay area</li> : null}
+            {!transportChosen ? <li>Transport options</li> : null}
+            {datesChosen && stayChosen && transportChosen ? <li>No open first-step blockers</li> : null}
+          </ul>
+        </section>
+
+        <section className="workspace-phase is-chosen">
+          <div className="workspace-phase-header">
+            <p>Chosen</p>
+            <span>2</span>
+          </div>
+          <ul className="workspace-phase-list">
+            <li>3-4 day trip length</li>
+            <li>Culture + food focus</li>
+            {datesChosen ? <li>Early October, flexible</li> : null}
+            {stayChosen ? <li>Central, walkable stay area</li> : null}
+            {transportChosen ? <li>Compare rail and flights</li> : null}
+          </ul>
+        </section>
+
+        <section className="workspace-phase is-confirmed">
+          <div className="workspace-phase-header">
+            <p>Confirmed</p>
+            <span>0</span>
+          </div>
+          <ul className="workspace-phase-list">
+            <li>No bookings yet</li>
+          </ul>
+        </section>
+      </div>
+
+      {selectedNextStep ? (
+        <p className="workspace-feedback" role="status">
+          Staged: {selectedNextStep === "dates" ? "travel dates" : selectedNextStep === "stay" ? "stay area" : "transport plan"}.
+          In the production widget this action would call the matching trip tool and update ChatGPT's context.
+        </p>
+      ) : null}
+    </section>
+  );
+}
+
 export const Case1CreateTrip: Story = {
   name: "Case 1: Create Trip",
   args: {
@@ -138,6 +266,104 @@ export const Case1ClarifyTrip: Story = {
             }}
           />
         ),
+      },
+    ],
+  },
+};
+
+export const Case1BFirstFiveMinutesWorkspace: Story = {
+  name: "Case 1B: First 5 Minutes Workspace",
+  args: {
+    turns: [
+      {
+        role: "user",
+        text: "I want to plan a trip to Venice",
+      },
+      {
+        role: "assistant",
+        text: "I'll shape the workspace first so we only ask for the few details that change the plan.",
+        widget: (
+          <TripClarificationLayout
+            props={{
+              session_id: "workflow-venice-first-five",
+              intent: "plan_trip",
+              destination: "Venice",
+              current_index: 0,
+              total_questions: 4,
+              known_fields: { destination: "Venice" },
+              answers: {},
+              questions: [
+                {
+                  id: "planning_priority",
+                  prompt: "What kind of trip are you planning?",
+                  reason: "This helps me ask the right questions first.",
+                  required: false,
+                  answer_type: "single_choice",
+                  options: [
+                    { id: "priority-1", label: "Experience-first", value: "experience_first" },
+                    { id: "priority-2", label: "Budget-first", value: "budget_first" },
+                    { id: "priority-3", label: "Date-constrained", value: "date_constrained" },
+                    { id: "priority-4", label: "Loyalty-driven", value: "loyalty_driven" },
+                  ],
+                  allow_free_text: true,
+                  allow_skip: true,
+                },
+                {
+                  id: "duration",
+                  prompt: "How long are you planning to stay in Venice?",
+                  reason: "This sets the itinerary depth and pace.",
+                  required: false,
+                  answer_type: "single_choice",
+                  options: [
+                    { id: "duration-1", label: "1-2 days", value: "1-2 days" },
+                    { id: "duration-2", label: "3-4 days", value: "3-4 days" },
+                    { id: "duration-3", label: "5-7 days", value: "5-7 days" },
+                    { id: "duration-4", label: "1+ weeks", value: "1+ weeks" },
+                  ],
+                  allow_free_text: true,
+                  allow_skip: true,
+                },
+                {
+                  id: "travel_style",
+                  prompt: "What's your main travel style?",
+                  required: false,
+                  answer_type: "single_choice",
+                  options: [
+                    { id: "style-1", label: "Cultural & sightseeing", value: "culture" },
+                    { id: "style-2", label: "Food & local experiences", value: "food" },
+                    { id: "style-3", label: "Relaxation & photography", value: "relaxed" },
+                    { id: "style-4", label: "Mixed experience", value: "mixed" },
+                  ],
+                  allow_free_text: true,
+                  allow_skip: true,
+                },
+                {
+                  id: "timing",
+                  prompt: "When are you thinking of going?",
+                  required: false,
+                  answer_type: "single_choice",
+                  options: [
+                    { id: "timing-1", label: "Summer (peak season)", value: "summer" },
+                    { id: "timing-2", label: "Spring/Fall (shoulder)", value: "shoulder" },
+                    { id: "timing-3", label: "Winter (quiet)", value: "winter" },
+                    { id: "timing-4", label: "No preference yet", value: "no preference" },
+                  ],
+                  allow_free_text: true,
+                  allow_skip: true,
+                },
+              ],
+            }}
+          />
+        ),
+      },
+      {
+        role: "user",
+        text: "Experience-first, probably 3-4 days, mostly culture and food.",
+      },
+      {
+        role: "assistant",
+        text: "I created the workspace because the destination and planning intent are clear. Here's what we know and what still needs work.",
+        widget: <FirstFiveMinutesWorkspacePreview />,
       },
     ],
   },

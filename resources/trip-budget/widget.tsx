@@ -11,6 +11,8 @@ export const widgetMetadata: WidgetMetadata = {
   metadata: {
     prefersBorder: true,
     widgetDescription: "Trip spending tracker with extracted prices, budget target, and category totals.",
+    invoking: "Loading trip budget",
+    invoked: "Loaded trip budget",
     csp: { connectDomains: [], resourceDomains: [] },
   },
 };
