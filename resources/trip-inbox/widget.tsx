@@ -11,6 +11,8 @@ export const widgetMetadata: WidgetMetadata = {
   metadata: {
     prefersBorder: true,
     widgetDescription: "Saved trip fragments that still need review.",
+    invoking: "Loading trip inbox",
+    invoked: "Loaded trip inbox",
     csp: { connectDomains: [], resourceDomains: [] },
   },
 };

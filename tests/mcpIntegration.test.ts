@@ -39,6 +39,7 @@ describe("MCP integration", () => {
     const addItemTool = requireTool(tools, "add_trip_item");
     const inboxTool = requireTool(tools, "list_trip_inbox");
     const renderBoardTool = requireTool(tools, "render_trip_board");
+    const getTripBoardTool = requireTool(tools, "get_trip_board");
     const itineraryTool = requireTool(tools, "get_trip_itinerary");
     const budgetTool = requireTool(tools, "get_trip_budget");
     const askClarificationTool = requireTool(tools, "ask_trip_clarification");
@@ -59,12 +60,16 @@ describe("MCP integration", () => {
     ]);
     expectNoBooleanRequired(createTripTool.inputSchema);
     expectNoBooleanRequired(addItemTool.inputSchema);
-    expect(inboxTool._meta?.["openai/outputTemplate"]).toEqual(expect.stringContaining("trip-inbox"));
-    expect(renderBoardTool._meta?.["openai/outputTemplate"]).toEqual(expect.stringContaining("trip-board"));
-    expect(itineraryTool._meta?.["openai/outputTemplate"]).toEqual(expect.stringContaining("trip-itinerary"));
-    expect(budgetTool._meta?.["openai/outputTemplate"]).toEqual(expect.stringContaining("trip-budget"));
-    expect(askClarificationTool._meta?.["openai/outputTemplate"]).toEqual(expect.stringContaining("trip-clarification"));
-    expect(clarificationTool._meta?.["openai/outputTemplate"]).toEqual(expect.stringContaining("trip-clarification"));
+    expectWidgetMetadata(inboxTool, "trip-inbox", "Loading trip inbox", "Loaded trip inbox");
+    expectWidgetMetadata(renderBoardTool, "trip-board", "Rendering trip board", "Rendered trip board");
+    expectWidgetMetadata(itineraryTool, "trip-itinerary", "Loading trip itinerary", "Loaded trip itinerary");
+    expectWidgetMetadata(budgetTool, "trip-budget", "Loading trip budget", "Loaded trip budget");
+    expectWidgetMetadata(askClarificationTool, "trip-clarification", "Opening trip questions", "Opened trip questions");
+    expectWidgetMetadata(clarificationTool, "trip-clarification", "Opening trip questions", "Opened trip questions");
+    expect(getTripBoardTool._meta?.ui).toBeUndefined();
+    expect(getTripBoardTool._meta?.["openai/outputTemplate"]).toBeUndefined();
+    expect(addItemTool._meta?.ui).toBeUndefined();
+    expect(addItemTool._meta?.["openai/outputTemplate"]).toBeUndefined();
 
     const created = await session.callTool("create_trip", {
       title: "Lisbon",
@@ -168,6 +173,19 @@ function expectNoBooleanRequired(value: unknown): void {
   for (const child of Object.values(value)) {
     expectNoBooleanRequired(child);
   }
+}
+
+function expectWidgetMetadata(tool: Tool, widgetName: string, invoking: string, invoked: string): void {
+  const template = `ui://widget/${widgetName}.html`;
+  expect(tool._meta?.ui).toMatchObject({ resourceUri: template });
+  expect(tool._meta?.["ui/resourceUri"]).toBe(template);
+  expect(tool._meta?.["openai/outputTemplate"]).toBe(template);
+  expect(tool._meta?.["openai/toolInvocation/invoking"]).toBe(invoking);
+  expect(tool._meta?.["openai/toolInvocation/invoked"]).toBe(invoked);
+  expect(tool._meta?.["openai/widgetCSP"]).toMatchObject({
+    connect_domains: expect.any(Array),
+    resource_domains: expect.any(Array),
+  });
 }
 
 function expectStructured(result: CallToolResult): Record<string, unknown> {

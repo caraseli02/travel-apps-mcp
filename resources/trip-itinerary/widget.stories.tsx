@@ -134,11 +134,64 @@ export const Empty: Story = {
   },
 };
 
-export const ErrorState: Story = {
+export const Agentic: Story = {
   args: {
     props: {
       ...defaultProps,
-      error: fixtures.errorOutput.error,
+      trip: { ...mockTrip, title: "Tokyo Expert Plan" },
+      validation_report: {
+        score: 94,
+        status: "optimal",
+        message: "This itinerary is highly feasible. I've allocated 30-45 min buffers between all activities to account for Tokyo's transit complexity.",
+      },
+      days: [
+        {
+          label: "Day 1 – Oct 10 (Thu)",
+          items: [
+            baseItem({
+              title: "Arrive at Narita Airport",
+              item_type: "transport",
+              schedule_label: "15:00",
+              location_note: "Narita Terminal 1",
+              grounding: { status: "Confirmed", checked_at: "2 mins ago" },
+              transit_to_next: "1h 15m (Narita Express)",
+            }),
+            baseItem({
+              title: "Check-in Shinjuku Prince Hotel",
+              item_type: "accommodation",
+              schedule_label: "18:00",
+              grounding: { status: "Available", checked_at: "Now" },
+              rationale: "Chosen for its direct access to the JR lines, saving you 20 mins of daily walking friction.",
+            }),
+          ],
+        },
+        {
+          label: "Day 2 – Oct 11 (Fri)",
+          items: [
+            baseItem({
+              title: "Tsukiji Outer Market breakfast",
+              item_type: "food",
+              schedule_label: "08:30",
+              grounding: { status: "Open", checked_at: "Live" },
+              transit_to_next: "25 min (Oedo Line)",
+            }),
+            baseItem({
+              title: "teamLab Borderless",
+              item_type: "activity",
+              schedule_label: "11:00",
+              grounding: { status: "Limited Tickets", checked_at: "10 mins ago" },
+              rationale: "Scheduled early to avoid peak crowds and ensure a lower sensory friction score.",
+              transit_to_next: "40 min (Yurikamome)",
+            }),
+            baseItem({
+              title: "Shibuya Crossing",
+              item_type: "activity",
+              schedule_label: "18:30",
+              grounding: { status: "Verified Open", checked_at: "Live" },
+            }),
+          ],
+        },
+      ],
     } as any,
   },
 };

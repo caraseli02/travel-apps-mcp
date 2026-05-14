@@ -11,6 +11,8 @@ export const widgetMetadata: WidgetMetadata = {
   metadata: {
     prefersBorder: true,
     widgetDescription: "Trip planning board grouped by decisions, shortlist, booked items, itinerary, and gaps.",
+    invoking: "Rendering trip board",
+    invoked: "Rendered trip board",
     csp: { connectDomains: [], resourceDomains: [] },
   },
 };

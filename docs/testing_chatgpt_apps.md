@@ -1,6 +1,6 @@
 # Testing ChatGPT Apps
 
-The primary local validation path is now `mcp-use` Inspector.
+The primary local validation path is `mcp-use` Inspector plus the MCP integration tests.
 
 ## Local
 
@@ -9,7 +9,12 @@ npm install
 npm run dev
 ```
 
-Open the Inspector served by `mcp-use` and exercise the MVP flow:
+Open the Inspector served by `mcp-use` and exercise the MVP flow in both supported widget protocol modes:
+
+- **MCP Apps mode:** widget tools must advertise `_meta.ui.resourceUri`.
+- **ChatGPT mode:** the same widget tools must advertise `_meta["openai/outputTemplate"]`.
+
+For each mode, run this flow:
 
 1. `create_trip`
 2. `add_trip_item`
@@ -20,6 +25,8 @@ Open the Inspector served by `mcp-use` and exercise the MVP flow:
 7. `get_trip_itinerary`
 8. `get_trip_budget`
 9. `get_trip_summary`
+
+The MVP widget tools are `list_trip_inbox`, `render_trip_board`, `get_trip_itinerary`, `get_trip_budget`, `ask_trip_clarification`, and `render_trip_clarification`. Data and mutation tools such as `add_trip_item`, `get_trip_board`, and `prepare_trip_clarification` should not advertise widget templates.
 
 For file-backed smoke testing:
 
@@ -39,7 +46,21 @@ DATABASE_URL="postgresql://..." TRIP_STORE_BACKEND=postgres npm run dev
 npm run check
 ```
 
-This runs TypeScript typecheck, Vitest parity tests, and the `mcp-use` build for server plus widgets.
+This runs TypeScript typecheck, Vitest parity tests, MCP descriptor assertions, and the `mcp-use` build for server plus widgets.
+
+The MCP integration test should prove:
+
+- public tool schemas stay ChatGPT-compatible
+- widget tools expose both MCP Apps and ChatGPT metadata
+- data-only tools do not advertise widgets
+- widget tool calls return `structuredContent` plus model-visible text
+- transient clarification submit keeps its close metadata
+
+## Widget Scope
+
+The main tool surface is the persisted trip workspace. Trip inbox, board, itinerary, budget, and clarification widgets are in the MVP validation path.
+
+Other built resources, such as destination guide, activity cards, packing checklist, and explore places, are non-MVP/experimental unless redesigned around saved trip state. They should not be treated as submission-ready surfaces just because `mcp-use build` packages them.
 
 ## Hosted Developer Mode
 
@@ -50,4 +71,5 @@ Hosted validation is required before submission-ready claims:
 - Confirm ChatGPT Developer Mode can connect to the MCP URL.
 - Run the full MVP trip flow.
 - Confirm trip state persists across app restart or redeploy.
-- Confirm widgets render for inbox, board, itinerary, and budget.
+- Confirm widgets render for inbox, board, itinerary, budget, and clarification.
+- Confirm production widget metadata, CSP, and domain settings match the hosted origin.

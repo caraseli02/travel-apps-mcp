@@ -2,7 +2,7 @@
 
 TypeScript MCP app for persisted travel planning workspaces in ChatGPT Apps.
 
-The app uses `mcp-use` for the MCP server, React widget resources, local Inspector preview, and Node-friendly deployment. The production runtime is now TypeScript only.
+The app uses `mcp-use` for the MCP server, React widget resources, local Inspector preview, and Node-friendly deployment. The production runtime is now TypeScript only, and retained trip-workspace widgets are expected to expose both MCP Apps and ChatGPT-compatible metadata.
 
 ## Quick Start
 
@@ -73,4 +73,4 @@ Run:
 npm run check
 ```
 
-Before claiming ChatGPT submission readiness, also validate the hosted HTTPS endpoint in ChatGPT Developer Mode with database-backed trip state.
+Before claiming submission readiness, also validate the hosted HTTPS endpoint in ChatGPT Developer Mode with database-backed trip state. Local validation should include the Inspector protocol modes documented in `docs/testing_chatgpt_apps.md`.
