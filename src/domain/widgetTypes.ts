@@ -131,20 +131,6 @@ export type TripItineraryProps = z.infer<typeof tripItineraryPropsSchema>;
 export type TripBudgetProps = z.infer<typeof tripBudgetPropsSchema>;
 export type TripClarificationProps = z.infer<typeof tripClarificationPropsSchema>;
 
-export const explorePlaceSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  subtitle: z.string(),
-  image_url: z.string().optional(),
-  url: z.string().optional(),
-});
-
-export const explorePlacesPropsSchema = z.object({
-  section_title: z.string().optional(),
-  browse_url: z.string().optional(),
-  places: z.array(explorePlaceSchema),
-});
-
 export const packingChecklistPropsSchema = z.object({
   destination: z.string(),
   duration_days: z.number(),
@@ -167,43 +153,4 @@ export const packingChecklistPropsSchema = z.object({
   notes: z.array(z.string()),
 });
 
-export const travelActivityCardSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  category: z.string(),
-  description: z.string(),
-  duration_hours: z.number(),
-  cost_usd: z.number(),
-  weather_dependent: z.boolean(),
-  best_weather: z.array(z.string()),
-});
-
-export const travelActivityCardsPropsSchema = z.object({
-  city: z.string(),
-  weather: z.string(),
-  season: z.string(),
-  activities: z.array(travelActivityCardSchema),
-});
-
-export const travelDestinationGuidePropsSchema = z.object({
-  city: z.string(),
-  country: z.string(),
-  overview: z.string(),
-  best_time: z.string(),
-  coordinates: z.object({ lat: z.number(), lon: z.number() }),
-  tips: z.array(z.object({ category: z.string(), icon: z.string(), text: z.string() })),
-  activities: z.array(
-    z.object({
-      name: z.string(),
-      description: z.string(),
-      duration_hours: z.number(),
-      cost_usd: z.number(),
-      weather_dependent: z.boolean(),
-    })
-  ),
-});
-
-export type ExplorePlacesProps = z.infer<typeof explorePlacesPropsSchema>;
 export type PackingChecklistProps = z.infer<typeof packingChecklistPropsSchema>;
-export type TravelActivityCardsProps = z.infer<typeof travelActivityCardsPropsSchema>;
-export type TravelDestinationGuideProps = z.infer<typeof travelDestinationGuidePropsSchema>;
