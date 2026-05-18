@@ -10,6 +10,8 @@
   },
   "scripts": {
     "dev": "mcp-use dev",
+    "clean": "rm -rf dist",
+    "prebuild": "npm run clean",
     "build": "mcp-use build",
     "start": "mcp-use start",
     "typecheck": "tsc --noEmit",

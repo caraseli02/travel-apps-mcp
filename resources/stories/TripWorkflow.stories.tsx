@@ -6,9 +6,6 @@ import { TripBoardLayout } from "../trip-board/widget";
 import { TripItineraryLayout } from "../trip-itinerary/widget";
 import { TripBudgetLayout } from "../trip-budget/widget";
 import { TripClarificationLayout } from "../trip-clarification/widget";
-import { ExplorePlacesLayout } from "../explore-places/widget";
-import { TravelDestinationGuideLayout } from "../travel-destination-guide/widget";
-import { TravelActivityCardsLayout } from "../travel-activity-cards/widget";
 import { PackingChecklistLayout } from "../packing-checklist/widget";
 import * as fixtures from "./fixtures/travelFixtures";
 
@@ -539,59 +536,8 @@ export const Case5TripBudget: Story = {
   },
 };
 
-export const Case6Explore: Story = {
-  name: "Case 6: Explore Places",
-  args: {
-    turns: [
-      {
-        role: "user",
-        text: "I'm thinking of Valencia. What's there to do?",
-      },
-      {
-        role: "assistant",
-        text: "Valencia is beautiful! Here are some top picks to explore:",
-        widget: <ExplorePlacesLayout props={fixtures.explorePlacesValencia} />,
-      },
-    ],
-  },
-};
-
-export const Case7Guide: Story = {
-  name: "Case 7: Destination Guide",
-  args: {
-    turns: [
-      {
-        role: "user",
-        text: "Tell me more about Madrid.",
-      },
-      {
-        role: "assistant",
-        text: "Madrid is a vibrant capital with rich culture. Here's a quick guide:",
-        widget: <TravelDestinationGuideLayout props={fixtures.destinationGuideMadrid} />,
-      },
-    ],
-  },
-};
-
-export const Case8Activities: Story = {
-  name: "Case 8: Activity Cards",
-  args: {
-    turns: [
-      {
-        role: "user",
-        text: "It's raining in London today. What can I do indoors?",
-      },
-      {
-        role: "assistant",
-        text: "London has plenty of indoor options. These are great for a rainy spring day:",
-        widget: <TravelActivityCardsLayout props={fixtures.activityCardsLondon} />,
-      },
-    ],
-  },
-};
-
-export const Case9Packing: Story = {
-  name: "Case 9: Packing Checklist",
+export const Case6Packing: Story = {
+  name: "Case 6: Packing Checklist",
   args: {
     turns: [
       {
